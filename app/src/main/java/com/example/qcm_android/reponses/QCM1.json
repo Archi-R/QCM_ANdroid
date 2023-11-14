@@ -1,0 +1,13 @@
+{
+  "QCM": "QCM1",
+    "liste questions": [
+      {
+        "question": "Quelle est la couleur du cheval blanc d'Henri IV ?",
+        "reponse": "reponse_a"
+      },
+        {
+         "question": "Qu'est-ce qu'un boomrang qui ne revient pas ?",
+         "reponse": "reponse_d"
+        }
+    ]
+}
