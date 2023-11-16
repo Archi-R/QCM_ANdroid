@@ -20,10 +20,10 @@ public class QuestionViewModel {
 
         JSONObject json = loadJsonFromFile(JSONFile);
         this.question = json.getString("question");
-        this.reponse_a = json.getString("reponse_a");
-        this.reponse_b = json.getString("reponse_b");
-        this.reponse_c = json.getString("reponse_c");
-        this.reponse_d = json.getString("reponse_d");
+        this.reponse_a = json.getString("a");
+        this.reponse_b = json.getString("b");
+        this.reponse_c = json.getString("c");
+        this.reponse_d = json.getString("d");
     }
     public String getQuestion() {
         return this.question;

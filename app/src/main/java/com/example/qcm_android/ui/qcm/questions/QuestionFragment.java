@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.qcm_android.R;
 import com.example.qcm_android.databinding.FragmentQuestionBinding;
 import com.example.qcm_android.ui.qcm.QCM;
 import com.example.qcm_android.ui.qcm.Question;
@@ -78,8 +81,19 @@ public class QuestionFragment extends Fragment {
     }
 
     private void handleAnswer(String answer) {
-        // Logique pour gérer la réponse ici
-        // Par exemple, vérifier si la réponse est correcte, afficher un message, etc.
+        this.qcm.putReponse(answer);
+        QuestionFragment questionFragment = new QuestionFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("qcm_name", this.qcm.getName());
+        questionFragment.setArguments(bundle);
+
+        // Afficher QuestionFragment
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_container, questionFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
