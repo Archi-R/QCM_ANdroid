@@ -37,8 +37,8 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        HomeViewModel homeViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
+        viewModel = homeViewModel;
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -61,9 +61,10 @@ public class HomeFragment extends Fragment {
                 questionFragment.setArguments(bundle);
 
                 // Afficher QuestionFragment
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.fragment_container, questionFragment);
+                //transaction.replace(R.id.nav_host_fragment, questionFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 

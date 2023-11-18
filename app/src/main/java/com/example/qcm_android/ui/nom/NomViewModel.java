@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 public class NomViewModel {
     private final MutableLiveData<String> name;
 
+
     public NomViewModel() {
         name = new MutableLiveData<>();
         name.setValue("Nom");

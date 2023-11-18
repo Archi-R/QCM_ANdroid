@@ -1,51 +1,64 @@
 package com.example.qcm_android.ui.home;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.qcm_android.ui.qcm.QCM;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<File>> fileList;
+    private Context context;
 
-    public HomeViewModel() {
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
         fileList = new MutableLiveData<>();
         loadJSONs();
+        QCM.setAssetManager(application.getAssets());
     }
 
 
     public void loadJSONs() {
-        // TODO Lire les fichiers JSON et mettre à jour fileList
         List<File> jsonFiles = new ArrayList<>();
-        File directory = getJsonFilesDirectory(); // Remplacez par votre logique de chemin de dossier
 
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile() && file.getName().endsWith(".json")) {
-                    jsonFiles.add(file);
+        try {
+            // Obtenez le gestionnaire d'assets
+            AssetManager assetManager = getApplication().getAssets();
+
+            // Liste des fichiers dans le dossier "questions" dans le dossier "assets"
+            String[] files = assetManager.list("questions");
+
+            if (files != null) {
+                for (String file : files) {
+                    if (file.endsWith(".json")) {
+                        jsonFiles.add(new File("questions/" + file));
+                    }
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        fileList.postValue(jsonFiles);
+        this.fileList.setValue(jsonFiles);
     }
 
-    private File getJsonFilesDirectory() {
-        // Retournez le chemin du dossier contenant les fichiers JSON
-        // Par exemple, pour le stockage interne: context.getFilesDir();
-        // Assurez-vous de gérer les permissions si vous utilisez le stockage externe
-        File directory = new File("chemin/vers/le/dossier"); // TODO Remplacez par votre logique de chemin de dossier
-        if (!directory.exists()) {
-            throw new RuntimeException("Le dossier n'existe pas");
-        }
-        return directory;
-    }
 
     public LiveData<List<File>> getFileList() {
         return fileList;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

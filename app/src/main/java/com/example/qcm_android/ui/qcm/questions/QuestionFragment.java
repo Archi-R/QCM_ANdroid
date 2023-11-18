@@ -17,6 +17,8 @@ import com.example.qcm_android.databinding.FragmentQuestionBinding;
 import com.example.qcm_android.ui.qcm.QCM;
 import com.example.qcm_android.ui.qcm.Question;
 
+import java.util.Objects;
+
 public class QuestionFragment extends Fragment {
     private FragmentQuestionBinding binding;
     private QCM qcm;
@@ -89,9 +91,10 @@ public class QuestionFragment extends Fragment {
         questionFragment.setArguments(bundle);
 
         // Afficher QuestionFragment
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, questionFragment);
+        //transaction.replace(R.id.nav_host_fragment, questionFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

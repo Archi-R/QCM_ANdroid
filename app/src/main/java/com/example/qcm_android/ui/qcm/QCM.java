@@ -1,10 +1,13 @@
 package com.example.qcm_android.ui.qcm;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -17,9 +20,9 @@ public class QCM {
     private List<String> reponses;
     private String name;
     private Question currentQuestion;
-    private String nom_personne;
 
-    private JSONObject json; // maybe suppr
+    private static AssetManager assetManager;
+
 
     private QCM(File jsonFile) {
         this.questions = new ArrayList<>();
@@ -29,10 +32,25 @@ public class QCM {
 
     public static QCM getInstance(String qcmName) {
         if (!instances.containsKey(qcmName)) {
-            File jsonFile = new File("chemin/vers/le/fichier/" + qcmName + ".json"); // TODO Remplacez par le chemin de fichier
-            QCM qcm = new QCM(jsonFile);
-            qcm.name = qcmName;
-            instances.put(qcmName, qcm);
+            try {
+               // Liste des fichiers dans le dossier "questions" dans le dossier "assets"
+                String[] files = assetManager.list("questions");
+
+                if (files != null) {
+                    for (String file : files) {
+                        if (file.endsWith(".json")) {
+                            if (file.equals(qcmName)) {
+                                File jsonFile = new File("questions/" + file);
+                                QCM qcm = new QCM(jsonFile);
+                                qcm.name = qcmName;
+                                instances.put(qcmName, new QCM(jsonFile));
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return instances.get(qcmName);
     }
@@ -100,6 +118,10 @@ public class QCM {
 
     public String getName() {
         return name;
+    }
+
+    public static void setAssetManager(AssetManager assetManager) {
+        QCM.assetManager = assetManager;
     }
 }
 
