@@ -1,0 +1,25 @@
+{
+    "QCM": "Cybersecurite",
+    "liste_questions": [
+        {
+            "question": "Quel est le terme pour une tentative d'obtenir des informations sensibles en se faisant passer pour une entit\u00e9 de confiance?",
+            "reponse": "a"
+        },
+        {
+            "question": "Quel type d'attaque consiste \u00e0 surcharger un serveur avec un grand nombre de requ\u00eates pour le rendre inaccessible?",
+            "reponse": "a"
+        },
+        {
+            "question": "Qu'est-ce qu'un VPN (Virtual Private Network) utilise principalement pour assurer la s\u00e9curit\u00e9 des donn\u00e9es?",
+            "reponse": "c"
+        },
+        {
+            "question": "Quelle m\u00e9thode est souvent utilis\u00e9e pour s\u00e9curiser les mots de passe stock\u00e9s?",
+            "reponse": "b"
+        },
+        {
+            "question": "Qu'est-ce qu'un logiciel malveillant qui se propage en se dupliquant lui-m\u00eame?",
+            "reponse": "a"
+        }
+    ]
+}
