@@ -3,18 +3,18 @@
   "liste_questions": [
     {"question": "Quelle est la couleur du cheval blanc d'Henri IV ?",
       "reponses": {
-        "reponse_a": "blanc",
-        "reponse_b": "noir",
-        "reponse_c": "rouge",
-        "reponse_d": "la réponse d"
+        "a": "blanc",
+        "b": "noir",
+        "c": "rouge",
+        "d": "la réponse d"
       }
     },
     {"question": "Qu'est-ce qu'un boomrang qui ne revient pas ?",
       "reponses": {
-        "reponse_a": "un boomrang",
-        "reponse_b": "un boomrang cassé",
-        "reponse_c": "un boomrang qui ne revient pas",
-        "reponse_d": "un chat mort"
+        "a": "un boomrang",
+        "b": "un boomrang cassé",
+        "c": "un boomrang qui ne revient pas",
+        "d": "un chat mort"
       }
     }
   ]

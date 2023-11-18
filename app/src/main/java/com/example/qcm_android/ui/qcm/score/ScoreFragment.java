@@ -23,6 +23,7 @@ import org.json.JSONStringer;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Objects;
@@ -33,10 +34,11 @@ public class ScoreFragment extends Fragment{
 
     private ScoreViewModel scoreViewModel;
 
-    private List<String> reponses;
+    private List<String> reponses_user;
     private List<String> reponsescorrectes;
 
     private List<Integer> resultats;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,74 +50,36 @@ public class ScoreFragment extends Fragment{
             this.qcm = QCM.getInstance(qcmName);
         }
 
+        // Récupération des réponses du QCM
+        assert bundle != null;
+        String qcmName = bundle.getString("qcm_name");
+        try {
+            this.scoreViewModel = new ScoreViewModel(qcmName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Récupération des réponses de l'utilisateur
+        this.reponses_user = qcm.getReponses();
+
+
+        // Comparaison des réponses
+        this.scoreViewModel.compareReponses(this.reponses_user);
+
         // Création de l'interface utilisateur
         this.binding = FragmentResultsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        reponses = qcm.getReponses();
-        reponsescorrectes = getReponsesFromFichierReponses();
+        final TextView reponsesok = binding.TVRepOk;
+        final TextView reponsesf = binding.TVRepFaux;
+        final TextView reponsesv = binding.TVRepVides;
 
-        resultats = compareReponses();
-
-        ScoreViewModel scoreViewModel = new ScoreViewModel(resultats.get(0), resultats.get(1), resultats.get(2));
-
-        final EditText reponsesok = this.binding.editTextNumber;
-        final EditText reponsesf = this.binding.editTextNumber2;
-        final EditText reponsesv = this.binding.editTextNumber3;
-
-        reponsesok.setText(scoreViewModel.getReponsesCorrectes());
-        reponsesf.setText(scoreViewModel.getReponsesFausses());
-        reponsesv.setText(scoreViewModel.getReponsesVides());
-
+        reponsesok.setText(String.valueOf(scoreViewModel.getReponsesCorrectes()));
+        reponsesf.setText(String.valueOf(scoreViewModel.getReponsesFausses()));
+        reponsesv.setText(String.valueOf(scoreViewModel.getReponsesVides()));
 
         return root;
     }
-
-
-    private List<String> getReponsesFromFichierReponses() {
-        Bundle bundle = getArguments();
-        JSONObject json = new JSONObject();
-        if (bundle != null) {
-            String qcmName = bundle.getString("qcm_name");
-            json = scoreViewModel.loadJsonFromFile(new File("app/src/main/java/com/example/qcm_android/reponses/" + qcmName + ".json"));
-            try {
-                JSONArray arrayreponses = json.getJSONArray("liste_questions");
-                for (int i = 0; i < arrayreponses.length(); i++) {
-                    JSONObject reponse = arrayreponses.getJSONObject(i);
-                    String rep = reponse.getString("reponse");
-                    reponsescorrectes.add(rep);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    private List<Integer> compareReponses(){
-        List<Integer> resultats = null;
-        Integer reponsesok = 0;
-        Integer reponsesf = 0;
-        Integer reponsesv = 0;
-        for (int i = 0; i< reponsescorrectes.size(); i++){
-            if (Objects.equals(reponsescorrectes.get(i), reponses.get(i))){
-                reponsesok++;
-            }
-            else if (reponses.get(i) == null){
-                reponsesv++;
-            }
-            else{
-                reponsesf++;
-            }
-        }
-        resultats.add(reponsesok);
-        resultats.add(reponsesf);
-        resultats.add(reponsesv);
-        return resultats;
-    }
-
-
-
 
     @Override
     public void onDestroyView() {

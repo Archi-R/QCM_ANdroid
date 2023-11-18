@@ -38,7 +38,6 @@ public class NomFragment extends Fragment{
                         HomeFragment homeFragment = new HomeFragment();
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        //fragmentTransaction.replace(R.id.nav_host_fragment, homeFragment);
                         fragmentTransaction.replace(R.id.fragment_container, homeFragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();

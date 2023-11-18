@@ -11,90 +11,123 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qcm_android.R;
 import com.example.qcm_android.databinding.FragmentQuestionBinding;
 import com.example.qcm_android.ui.qcm.QCM;
 import com.example.qcm_android.ui.qcm.Question;
+import com.example.qcm_android.ui.qcm.score.ScoreFragment;
 
 import java.util.Objects;
 
 public class QuestionFragment extends Fragment {
-    private FragmentQuestionBinding binding;
-    private QCM qcm;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    private QuestionViewModel questionViewModel;
+    Bundle bundle;
 
-        // Récupération du nom du QCM et obtention de l'instance de QCM
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            String qcmName = bundle.getString("qcm_name");
-            this.qcm = QCM.getInstance(qcmName);
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_question, container, false);
+
+        // Initialiser le ViewModel
+        questionViewModel = new ViewModelProvider(this).get(QuestionViewModel.class);
+
+        // Obtenez le nom du QCM du Bundle
+        this.bundle = getArguments();
+        if (this.bundle != null) {
+            String qcmName = this.bundle.getString("qcm_name");
+            QCM qcm = QCM.getInstance(qcmName);
+            questionViewModel.setQCM(qcm);
         }
+        TextView questionTextView = view.findViewById(R.id.TVQuestion);
+        Button answerButtonA = view.findViewById(R.id.btn_a);
+        Button answerButtonB = view.findViewById(R.id.btn_b);
+        Button answerButtonC = view.findViewById(R.id.btn_c);
+        Button answerButtonD = view.findViewById(R.id.btn_d);
 
-        // Création de l'interface utilisateur
-        this.binding = FragmentQuestionBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        // Observez les changements dans le ViewModel
+        questionViewModel.getQCM().observe(getViewLifecycleOwner(), new Observer<QCM>() {
 
-        final TextView questionTextView = binding.TVQuestion;
-        final Button btn_a = this.binding.btnA;
-        final Button btn_b = this.binding.btnB;
-        final Button btn_c = this.binding.btnC;
-        final Button btn_d = this.binding.btnD;
-
-        // Mettre à jour l'interface utilisateur avec la question courante de QCM
-        if (this.qcm != null && this.qcm.getCurrentQuestion() != null) {
-            Question currentQuestion = this.qcm.getCurrentQuestion();
-            questionTextView.setText(currentQuestion.getQuestion());
-            btn_a.setText(currentQuestion.getReponseA());
-            btn_b.setText(currentQuestion.getReponseB());
-            btn_c.setText(currentQuestion.getReponseC());
-            btn_d.setText(currentQuestion.getReponseD());
-        }
-
-        // Définir les écouteurs de clic pour chaque bouton
-        btn_a.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onChanged(QCM qcm) {
+                // Obtenez la question actuelle
+                Question question = qcm.getCurrentQuestion();
+
+                questionTextView.setText(question.getQuestion());
+                answerButtonA.setText(question.getReponseA());
+                answerButtonB.setText(question.getReponseB());
+                answerButtonC.setText(question.getReponseC());
+                answerButtonD.setText(question.getReponseD());
+            }
+        });
+
+        // Définir les écouteurs d'événements pour les boutons
+        answerButtonA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Action pour le bouton A
                 handleAnswer("a");
             }
         });
-        btn_b.setOnClickListener(new View.OnClickListener() {
+
+        answerButtonB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                // Action pour le bouton B
                 handleAnswer("b");
             }
         });
-        btn_c.setOnClickListener(new View.OnClickListener() {
+
+        answerButtonC.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                // Action pour le bouton C
                 handleAnswer("c");
             }
         });
-        btn_d.setOnClickListener(new View.OnClickListener() {
+
+        answerButtonD.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                // Action pour le bouton D
                 handleAnswer("d");
             }
         });
 
-        return root;
+        return view;
     }
 
     private void handleAnswer(String answer) {
-        this.qcm.putReponse(answer);
-        QuestionFragment questionFragment = new QuestionFragment();
+        // Obtenez le QCM actuel
+        QCM qcm = questionViewModel.getQCM().getValue();
+        assert qcm != null;
+        qcm.putReponse(answer);
+        String qcmName = Objects.requireNonNull(this.bundle).getString("qcm_name");
 
+        // Si le QCM est terminé, affichez le fragment de résultats
+        Fragment nextFragment;
+        boolean isFinished = qcm.isFinished();
+        if (isFinished) {
+            nextFragment = new ScoreFragment();
+        } else {
+            nextFragment = new QuestionFragment();
+        }
+        passToNextFragment(nextFragment, qcmName);
+
+    }
+
+    private void passToNextFragment(Fragment fragment, String qcmName){
         Bundle bundle = new Bundle();
-        bundle.putString("qcm_name", this.qcm.getName());
-        questionFragment.setArguments(bundle);
+        bundle.putString("qcm_name", qcmName);
+        fragment.setArguments(bundle);
 
-        // Afficher QuestionFragment
+        // Afficher le Fragment
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, questionFragment);
-        //transaction.replace(R.id.nav_host_fragment, questionFragment);
+        transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -102,6 +135,5 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }

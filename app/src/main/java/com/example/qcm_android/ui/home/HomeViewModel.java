@@ -20,7 +20,6 @@ import java.util.List;
 public class HomeViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<File>> fileList;
-    private Context context;
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
@@ -58,7 +57,4 @@ public class HomeViewModel extends AndroidViewModel {
         return fileList;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
 }

@@ -1,5 +1,7 @@
 package com.example.qcm_android.ui.qcm;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -8,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -57,11 +60,13 @@ public class QCM {
 
     private void loadQuestionsFromJson(File file) {
         try {
-            String content = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-            }
-            assert content != null;
+            InputStream is = assetManager.open(file.getPath());
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            String content = new String(buffer, StandardCharsets.UTF_8);
             JSONObject jsonObject = new JSONObject(content);
             // récupérer la liste des questions
             JSONArray questionsJson = jsonObject.getJSONArray("liste_questions");
@@ -70,10 +75,11 @@ public class QCM {
             for (int i = 0; i < questionsJson.length(); i++) {
                 JSONObject questionJson = questionsJson.getJSONObject(i);
                 String question = questionJson.getString("question");
-                String reponseA = questionJson.getString("a");
-                String reponseB = questionJson.getString("b");
-                String reponseC = questionJson.getString("c");
-                String reponseD = questionJson.getString("d");
+                JSONObject reponsesJson = questionJson.getJSONObject("reponses");
+                String reponseA = reponsesJson.getString("a");
+                String reponseB = reponsesJson.getString("b");
+                String reponseC = reponsesJson.getString("c");
+                String reponseD = reponsesJson.getString("d");
                 questions.add(new Question(question, reponseA, reponseB, reponseC, reponseD));
             }
 
@@ -122,6 +128,16 @@ public class QCM {
 
     public static void setAssetManager(AssetManager assetManager) {
         QCM.assetManager = assetManager;
+    }
+
+    public boolean isFinished() {
+        int sizeQ = questions.size();
+        int sizeR = reponses.size();
+        return sizeQ == sizeR;
+    }
+
+    public AssetManager getAssetManager() {
+        return assetManager;
     }
 }
 
