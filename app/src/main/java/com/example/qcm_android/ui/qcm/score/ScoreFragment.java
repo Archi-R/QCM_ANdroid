@@ -55,6 +55,8 @@ public class ScoreFragment extends Fragment{
         reponses = qcm.getReponses();
         reponsescorrectes = getReponsesFromFichierReponses();
 
+        resultats = compareReponses();
+
         ScoreViewModel scoreViewModel = new ScoreViewModel(resultats.get(0), resultats.get(1), resultats.get(2));
 
         final EditText reponsesok = this.binding.editTextNumber;
