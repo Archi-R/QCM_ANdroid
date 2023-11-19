@@ -20,15 +20,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, new NomFragment())
                     .commit();
         }
-
-        /*
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController);
-        */
-
     }
 
     public boolean onSupportNavigateUp() {
@@ -38,9 +29,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
-        /*NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return navController.navigateUp();
-
-         */
     }
 }

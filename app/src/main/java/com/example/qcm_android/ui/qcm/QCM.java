@@ -124,7 +124,7 @@ public class QCM {
         }
         int sizeQ = questions.size();
         int sizeR = reponses.size();
-        this.isFinished = sizeQ == sizeR;
+        this.isFinished = sizeQ <= sizeR;
         return this.isFinished;
     }
 
