@@ -19,17 +19,12 @@ import com.example.qcm_android.databinding.FragmentHomeBinding;
 import com.example.qcm_android.ui.qcm.QCM;
 import com.example.qcm_android.ui.qcm.questions.QuestionFragment;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    private HomeViewModel viewModel;
     private ListView listView;
     private List<File> fileList; // Variable de champ pour la liste des fichiers
 
@@ -38,7 +33,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
-        viewModel = homeViewModel;
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -53,9 +47,15 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Ouvrir un nouveau QuestionFragment avec le fichier JSON sélectionné
                 File selectedFile = fileList.get(position);
-                String qcmName = selectedFile.getName(); // Ou une autre méthode pour obtenir un identifiant unique pour le QCM
+                String qcmName = selectedFile.getName();
+
+                if(QCM.getInstance(qcmName).isFinished()) {
+                    QCM.getInstance(qcmName).reset();
+                }
+                // Créer un nouveau QuestionFragment
                 QuestionFragment questionFragment = new QuestionFragment();
 
+                // Passer le nom du fichier JSON sélectionné au QuestionFragment
                 Bundle bundle = new Bundle();
                 bundle.putString("qcm_name", qcmName);
                 questionFragment.setArguments(bundle);
@@ -66,7 +66,6 @@ public class HomeFragment extends Fragment {
                 transaction.replace(R.id.fragment_container, questionFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-
             }
         });
 

@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qcm_android.R;
-import com.example.qcm_android.databinding.FragmentQuestionBinding;
 import com.example.qcm_android.ui.qcm.QCM;
 import com.example.qcm_android.ui.qcm.Question;
 import com.example.qcm_android.ui.qcm.score.ScoreFragment;

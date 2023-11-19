@@ -42,8 +42,6 @@ public class NomFragment extends Fragment{
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
 
-
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

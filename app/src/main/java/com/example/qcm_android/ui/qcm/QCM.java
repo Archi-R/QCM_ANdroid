@@ -1,28 +1,24 @@
 package com.example.qcm_android.ui.qcm;
 
-import static java.security.AccessController.getContext;
-
-import android.content.Context;
 import android.content.res.AssetManager;
-import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
 public class QCM {
-    private static HashMap<String, QCM> instances = new HashMap<>();
-    private List<Question> questions;
-    private List<String> reponses;
+    private static final HashMap<String, QCM> instances = new HashMap<>();
+    private final List<Question> questions;
+    private final List<String> reponses;
     private String name;
     private Question currentQuestion;
+    private boolean isFinished = false;
 
     private static AssetManager assetManager;
 
@@ -105,18 +101,10 @@ public class QCM {
         }
     }
 
-    public void setCurrentQuestion(Question currentQuestion) {
-        this.currentQuestion = currentQuestion;
-    }
-
     public void putReponse(String reponse) {
         int index = questions.indexOf(currentQuestion);
         this.reponses.add(index, reponse);
         this.nextQuestion();
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
     }
     public List<String> getReponses() {
         return reponses;
@@ -131,13 +119,23 @@ public class QCM {
     }
 
     public boolean isFinished() {
+        if (this.isFinished){
+            return true;
+        }
         int sizeQ = questions.size();
         int sizeR = reponses.size();
-        return sizeQ == sizeR;
+        this.isFinished = sizeQ == sizeR;
+        return this.isFinished;
     }
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public void reset() {
+        this.reponses.clear();
+        this.isFinished = false;
+        this.currentQuestion = questions.get(0);
     }
 }
 

@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.qcm_android.ui.qcm.QCM;
 
 public class QuestionViewModel extends AndroidViewModel {
-    private MutableLiveData<QCM> qcm = new MutableLiveData<>();
+    private final MutableLiveData<QCM> qcm = new MutableLiveData<>();
 
     public QuestionViewModel(@NonNull Application application) {
         super(application);

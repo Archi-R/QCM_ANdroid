@@ -8,8 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +19,7 @@ public class ScoreViewModel {
     private int reponses_correctes = 0;
     private int reponses_fausses = 0;
     private int reponses_vides = 0;
-    private List<String> reponses = new ArrayList<String>();
+    private final List<String> reponses = new ArrayList<>();
 
 
     public ScoreViewModel(String qcmName) throws IOException {
@@ -49,7 +47,6 @@ public class ScoreViewModel {
             for (String file : files) {
                 if (file.endsWith(".json")) {
                     if (file.equals(qcmName)) {
-                        File jsonFile = new File("reponses/" + file);
                         try {
                             InputStream is = assetManager.open("reponses/" + file);
                             int size = is.available();

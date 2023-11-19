@@ -4,41 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.qcm_android.R;
 import com.example.qcm_android.databinding.FragmentResultsBinding;
 import com.example.qcm_android.ui.qcm.QCM;
-import com.example.qcm_android.ui.qcm.Question;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
-
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.List;
-import java.util.Objects;
 
 public class ScoreFragment extends Fragment{
     private FragmentResultsBinding binding;
     private QCM qcm;
-
     private ScoreViewModel scoreViewModel;
-
-    private List<String> reponses_user;
-    private List<String> reponsescorrectes;
-
-    private List<Integer> resultats;
-
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,12 +38,8 @@ public class ScoreFragment extends Fragment{
             throw new RuntimeException(e);
         }
 
-        // Récupération des réponses de l'utilisateur
-        this.reponses_user = qcm.getReponses();
-
-
-        // Comparaison des réponses
-        this.scoreViewModel.compareReponses(this.reponses_user);
+        // Comparaison des réponses de l'utilisateur
+        this.scoreViewModel.compareReponses(qcm.getReponses());
 
         // Création de l'interface utilisateur
         this.binding = FragmentResultsBinding.inflate(inflater, container, false);
